@@ -1,7 +1,8 @@
 package com.artyom.crud.entity;
 
 import com.artyom.crud.dto.UserRequest;
-import jakarta.persistence.*;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -17,7 +18,7 @@ public class User {
     private Byte age;
 
     public static User newOf(UserRequest request) {
-        return new User(null, request.name(), request.lastName(), request.age());
+        return new User(null, request.getName(), request.getLastName(), request.getAge());
     }
 
     public User() {

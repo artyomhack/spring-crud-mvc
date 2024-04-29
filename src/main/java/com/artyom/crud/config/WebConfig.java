@@ -15,33 +15,34 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 @EnableWebMvc
 @ComponentScan("com.artyom.crud")
 public class WebConfig implements WebMvcConfigurer {
-    private final ApplicationContext context;
+    private final ApplicationContext applicationContext;
 
-    public WebConfig(ApplicationContext context) {
-        this.context = context;
+    public WebConfig(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
+
     @Bean
-    public SpringResourceTemplateResolver templateResource() {
-        SpringResourceTemplateResolver templateResource = new SpringResourceTemplateResolver();
-        templateResource.setApplicationContext(context);
-        templateResource.setPrefix("classpath:templates");
-        templateResource.setSuffix(".html");
-        return templateResource;
+    public SpringResourceTemplateResolver templateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(applicationContext);
+        templateResolver.setPrefix("/WEB-INF/pages/");
+        templateResolver.setSuffix(".html");
+        return templateResolver;
     }
 
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResource());
+        templateEngine.setTemplateResolver(templateResolver());
         templateEngine.setEnableSpringELCompiler(true);
         return templateEngine;
     }
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
-        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-        viewResolver.setTemplateEngine(templateEngine());
-        registry.viewResolver(viewResolver);
+        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+        resolver.setTemplateEngine(templateEngine());
+        registry.viewResolver(resolver);
     }
 }

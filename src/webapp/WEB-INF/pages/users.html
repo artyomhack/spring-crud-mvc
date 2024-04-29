@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Info about users</title>
+</head>
+<style>
+    table {
+        width: 400px; /* Ширина таблицы */
+        border-collapse: collapse; /* Убираем двойные линии между ячейками */
+    }
+
+    td, th {
+        text-align: center;
+        padding: 6px; /* Поля вокруг содержимого таблицы */
+        border: 1px solid black; /* Параметры рамки */
+    }
+    th {
+        background: #ffffff; /* Цвет фона */
+    }
+</style>
+<body>
+    <h2>All users</h2>
+    <br>
+    <div>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Last name</th>
+            <th>Age</th>
+            <th colspan="2">Functions</th>
+        </tr>
+        <th:block th:if="${users} ? users : 'Users are not found' " th:each="usr : ${users}">
+            <tr>
+                <td><p th:text="${usr.id()}"></p></td>
+                <td><p th:text="${usr.name()}"/></td>
+                <td><p th:text="${usr.lastName()}"/></td>
+                <td><p th:text="${usr.age()}"/></td>
+                <td>
+                    <form th:method="get" th:action="@{/users/edit}" th:with="id=${usr.id()}">
+                        <input type="hidden" name="id" th:value="${usr.id()}">
+                        <input style="font-size: 14px; width: 60px" type="submit" value="Edit"/>
+                    </form>
+                </td>
+                <td>
+                    <form th:method="post" th:action="@{/users/delete(id=${usr.id()})}">
+                        <input style="font-size: 14px; width: 60px" type="submit" value="Delete"/>
+                    </form>
+                </td>
+            </tr>
+        </th:block>
+    </table>
+    <br>
+    <input type="button" value="Create" onclick="window.location.href='/users/create'" style="font-size: 14px"/>
+    </div>
+</body>
+</html>

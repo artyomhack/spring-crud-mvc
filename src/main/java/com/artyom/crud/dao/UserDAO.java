@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserDAO {
     void save(User user);
-    Optional<User> updateById(Long id, User user);
+    void updateById(Long id, User user);
     Optional<List<User>> fetchAll();
     Optional<User> fetchById(Long id);
     boolean deleteById(Long id);

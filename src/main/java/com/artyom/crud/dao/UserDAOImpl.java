@@ -1,56 +1,53 @@
 package com.artyom.crud.dao;
 
 import com.artyom.crud.entity.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
     @PersistenceContext
-    private final EntityManager manager;
-
-    public UserDAOImpl(EntityManager manager) {
-        this.manager = manager;
-        createTableIfNotExist();
-    }
+    private EntityManager manager;
 
     @Override
+    @Transactional
     public void save(User user) {
-        manager.getTransaction().begin();
         manager.persist(user);
-        manager.getTransaction().commit();
     }
 
     @Override
-    public Optional<User> updateById(Long id, User user) {
-        return Optional.empty();
+    @Transactional
+    public void updateById(Long id, User user) {
+        User userFromBD = manager.find(User.class, id);
+        if (manager.contains(userFromBD)) {
+            userFromBD.setName(user.getName());
+            userFromBD.setLastname(user.getLastname());
+            userFromBD.setAge(user.getAge());
+        } else {
+            throw new IllegalArgumentException("User is not in persistenceContext.");
+        }
     }
 
     @Override
+    @Transactional
     public Optional<List<User>> fetchAll() {
-        manager.getTransaction().begin();
-        List<User> users = manager.createQuery("from User", User.class).getResultList();
-        manager.getTransaction().commit();
-        return Optional.of(users);
+        return Optional.of(manager.createQuery("from User", User.class).getResultList());
     }
 
     @Override
     public Optional<User> fetchById(Long id) {
-        return Optional.empty();
+        return Optional.ofNullable(manager.find(User.class, id));
     }
 
     @Override
     public boolean deleteById(Long id) {
         return false;
-    }
-
-    private void createTableIfNotExist() {
-        manager.getTransaction().begin();
-        manager.createNativeQuery("CREATE SCHEMA IF NOT EXISTS public").executeUpdate();
-        manager.getTransaction().commit();
     }
 }

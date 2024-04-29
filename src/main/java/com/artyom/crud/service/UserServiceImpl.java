@@ -5,12 +5,13 @@ import com.artyom.crud.dto.UserInfo;
 import com.artyom.crud.dto.UserList;
 import com.artyom.crud.dto.UserRequest;
 import com.artyom.crud.entity.User;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-@Repository
+@Service
 public class UserServiceImpl implements UserService {
     private final UserDAO userDAO;
 
@@ -24,21 +25,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfo updateById(Long id, UserRequest request) {
-        return null;
+    public void updateById(Long id, UserRequest request) {
+        userDAO.updateById(id, User.newOf(request));
     }
 
     @Override
     public UserInfo findById(Long id) {
-        return null;
+        return UserInfo.from(userDAO.fetchById(id).orElseThrow(() ->
+                new NoSuchElementException("User not found.")));
     }
 
     @Override
     public UserList findAll() {
-        return UserList.of(userDAO.fetchAll()
+        return UserList.of( userDAO.fetchAll().orElse(Collections.emptyList())
                 .stream()
-                .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
                 .map(UserList.Item::from)
                 .toList()
         );
