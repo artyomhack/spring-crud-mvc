@@ -3,15 +3,10 @@ package com.artyom.crud.controller;
 import com.artyom.crud.dto.UserInfo;
 import com.artyom.crud.dto.UserRequest;
 import com.artyom.crud.service.UserService;
-import org.dom4j.rule.Mode;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,11 +56,17 @@ public class UsersController {
     public String showEditUserById(@RequestParam("id") String id, ModelMap model) {
         UserInfo userInfo = userService.findById(Long.valueOf(id));
         model.addAttribute("user", userInfo);
-        return "user-info";
+        return "user-edit";
+    }
+
+    @PostMapping("/edit")
+    public String updateUserById(@RequestParam("id") String id, @ModelAttribute("user") UserRequest request) {
+        userService.updateById(Long.parseLong(id), request);
+        return "redirect:/users";
     }
 
     @PostMapping("/find")
-    public String updateUserById(HttpServletRequest request, RedirectAttributes redirect) {
+    public String getUserById(HttpServletRequest request, RedirectAttributes redirect) {
         String id = request.getParameter("userId");
         finderUserHandler(id, redirect);
         return "redirect:/users";
