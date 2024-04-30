@@ -10,5 +10,5 @@ public interface UserDAO {
     void updateById(Long id, User user);
     Optional<List<User>> fetchAll();
     Optional<User> fetchById(Long id);
-    boolean deleteById(Long id);
+    void deleteById(Long id);
 }

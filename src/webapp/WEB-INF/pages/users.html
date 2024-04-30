@@ -15,23 +15,40 @@
         padding: 6px; /* Поля вокруг содержимого таблицы */
         border: 1px solid black; /* Параметры рамки */
     }
+
     th {
         background: #ffffff; /* Цвет фона */
     }
 </style>
 <body>
-    <h2>All users</h2>
+<h2>Все пользователи</h2>
+<br>
+<div>
     <br>
-    <div>
+    <form method="post" th:action="@{/users/find}">
+        <input type="text" id="userId" name="userId" placeholder="Введите ID">
+        <input type="submit" value="Search"/>
+    </form>
+    <span th:if="${info}">
+        <h3>Информация о пользователе:</h3>
+        <p>ID: <span th:text="${info.id()}"></span></p>
+        <p>Имя: <span th:text="${info.name()}"></span></p>
+        <p>Фамилия: <span th:text="${info.lastName()}"></span></p>
+        <p>Возраст: <span th:text="${info.age()}"></span></p>
+    </span>
+    <div th:if="${errorMessage}">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <br>
     <table>
         <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Last name</th>
-            <th>Age</th>
-            <th colspan="2">Functions</th>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Возраст</th>
+            <th colspan="2">Функции</th>
         </tr>
-        <th:block th:if="${users} ? users : 'Users are not found' " th:each="usr : ${users}">
+        <th:block th:each="usr: ${users}">
             <tr>
                 <td><p th:text="${usr.id()}"></p></td>
                 <td><p th:text="${usr.name()}"/></td>
@@ -44,7 +61,8 @@
                     </form>
                 </td>
                 <td>
-                    <form th:method="post" th:action="@{/users/delete(id=${usr.id()})}">
+                    <form th:method="post" th:action="@{/users/delete}" th:with="id=${usr.id()}">
+                        <input type="hidden" name="id" th:value="${usr.id()}">
                         <input style="font-size: 14px; width: 60px" type="submit" value="Delete"/>
                     </form>
                 </td>
@@ -52,7 +70,8 @@
         </th:block>
     </table>
     <br>
-    <input type="button" value="Create" onclick="window.location.href='/users/create'" style="font-size: 14px"/>
-    </div>
+    <input type="button" value="Create" onclick="window.location.href='/users/create'"
+           style="font-size: 14px; width: 60px"/>
+</div>
 </body>
 </html>

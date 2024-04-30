@@ -5,14 +5,14 @@
     <title>Create user</title>
 </head>
 <body>
-    <h2>Create new user</h2>
+    <h2>Создать нового пользователя</h2>
     <br>
     <form method="post" th:action="@{/users/create}" th:object="${userRequest}">
-        Name <input type="text" th:field="*{name}">
+        Имя <input type="text" th:field="*{name}">
         <br><br>
-        Last name: <input type="text" th:field="*{lastName}"/>
+        Фамилия: <input type="text" th:field="*{lastName}"/>
         <br><br>
-        Age: <input type="text" th:field="*{age}"/>
+        Возраст: <input type="text" th:field="*{age}"/>
         <br><br>
         <input type="submit" value="Save">
     </form>

@@ -7,7 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,23 +34,30 @@ public class UserDAOImpl implements UserDAO {
             userFromBD.setLastname(user.getLastname());
             userFromBD.setAge(user.getAge());
         } else {
-            throw new IllegalArgumentException("User is not in persistenceContext.");
+            throw new NoSuchElementException("User is not in persistenceContext.");
         }
     }
 
     @Override
     @Transactional
     public Optional<List<User>> fetchAll() {
-        return Optional.of(manager.createQuery("from User", User.class).getResultList());
+        List<User> list = manager.createQuery("from User", User.class).getResultList();
+        return list.isEmpty() ? Optional.empty() : Optional.of(list);
     }
 
     @Override
+    @Transactional
     public Optional<User> fetchById(Long id) {
-        return Optional.ofNullable(manager.find(User.class, id));
+        TypedQuery<User>  query = manager.createQuery("from User u WHERE u.id = :id", User.class);
+        query.setParameter("id", id);
+        return query.getResultList().isEmpty() ? Optional.empty() : Optional.of(query.getResultList().get(0));
     }
 
     @Override
-    public boolean deleteById(Long id) {
-        return false;
+    @Transactional
+    public void deleteById(Long id) {
+        if (fetchById(id).isPresent()) {
+            manager.remove(fetchById(id).get());
+        }
     }
 }

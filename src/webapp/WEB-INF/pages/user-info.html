@@ -5,14 +5,14 @@
     <title th:text="'User info by ' + ${user.id()}"></title>
 </head>
 <body>
-    <h2>Information about user</h2>
+    <h2>Изменить пользователя</h2>
     <br>
-    <form method="post" th:action="@{/users/edit}" th:object="${user}">
-        Name <input type="text" th:field="*{name}">
+    <form method="post" th:action="@{/users/edit(id=${user.id()})}" th:object="${user}">
+        Имя: <input type="text" th:field="*{name}">
         <br><br>
-        Last name: <input type="text" th:field="*{lastName}"/>
+        Фамилия: <input type="text" th:field="*{lastName}"/>
         <br><br>
-        Age: <input type="text" th:field="*{age}"/>
+        Возраст: <input type="text" th:field="*{age}"/>
         <br><br>
         <input style="font-size: 14px" type="submit" value="Update">
     </form>

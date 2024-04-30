@@ -31,8 +31,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfo findById(Long id) {
-        return UserInfo.from(userDAO.fetchById(id).orElseThrow(() ->
-                new NoSuchElementException("User not found.")));
+        Optional<User> userOptional = userDAO.fetchById(id);
+       return userOptional.map(UserInfo::from).orElse(null);
     }
 
     @Override
@@ -46,6 +46,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long id) {
-
+        userDAO.deleteById(id);
     }
 }

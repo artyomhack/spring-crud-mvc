@@ -11,4 +11,14 @@ public record UserInfo(
     public static UserInfo from(User user) {
         return new UserInfo(user.getId(), user.getName(), user.getLastname(), user.getAge());
     }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                '}';
+    }
 }
