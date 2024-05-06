@@ -18,7 +18,7 @@ public class User {
     private Byte age;
 
     public static User newOf(UserRequest request) {
-        return new User(null, request.getName(), request.getLastName(), request.getAge());
+        return new User(null, request.getName(), request.getLastName(), request.getAge().byteValue());
     }
 
     public User() {

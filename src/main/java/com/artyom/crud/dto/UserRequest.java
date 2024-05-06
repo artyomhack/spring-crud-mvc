@@ -1,17 +1,34 @@
 package com.artyom.crud.dto;
 
 import com.artyom.crud.entity.User;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 
 public class UserRequest {
     private Long id;
+    @NotBlank(message = "Имя не должно иметь пробелов")
+    @NotEmpty(message = "Имя не должно быть пустым")
+    @Size(min = 2, max = 30, message = "Ваше име должно иметь от 2 до 30 символов")
     private String name;
+    @NotBlank(message = "Имя не должно иметь пробелов")
+    @NotEmpty(message = "Имя не должно быть пустым")
+    @Size(min = 2, max = 30, message = "Ваша фамилия должна быть от 2 до 30 символов")
     private String lastName;
-    private Byte age;
+    @NotNull(message = "Возраст не должен быть пустым")
+    @Min(value = 12, message = "Ваш возраст должен быть от 12 лет")
+    @Max(value = 127, message = "Ваш возраст не может превышать 127 лет")
+    private Integer age;
 
     public UserRequest() {
     }
 
-    public UserRequest(Long id, String name, String lastName, Byte age) {
+    public UserRequest(Long id, String name, String lastName, Integer age) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -19,7 +36,7 @@ public class UserRequest {
     }
 
     public static UserRequest from(User user) {
-        return new UserRequest(user.getId(), user.getName(), user.getLastname(), user.getAge());
+        return new UserRequest(user.getId(), user.getName(), user.getLastname(), user.getAge().intValue());
     }
 
     public Long getId() {
@@ -34,10 +51,6 @@ public class UserRequest {
         return lastName;
     }
 
-    public Byte getAge() {
-        return age;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -50,7 +63,11 @@ public class UserRequest {
         this.lastName = lastName;
     }
 
-    public void setAge(Byte age) {
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
         this.age = age;
     }
 }

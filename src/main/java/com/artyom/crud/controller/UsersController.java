@@ -5,11 +5,13 @@ import com.artyom.crud.dto.UserRequest;
 import com.artyom.crud.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Map;
 import java.util.Objects;
 
@@ -47,7 +49,13 @@ public class UsersController {
     }
 
     @PostMapping("/create")
-    public String saveUser(@ModelAttribute("userRequest") UserRequest userRequest) {
+    public String saveUser(@ModelAttribute("userRequest") @Valid UserRequest userRequest,
+                           BindingResult binding) {
+
+        if (binding.hasErrors()) {
+            return "user-form";
+        }
+
         userService.create(userRequest);
         return "redirect:/users";
     }
@@ -60,7 +68,11 @@ public class UsersController {
     }
 
     @PostMapping("/edit")
-    public String updateUserById(@RequestParam("id") String id, @ModelAttribute("user") UserRequest request) {
+    public String updateUserById(@RequestParam("id") String id, @ModelAttribute("user") @Valid UserRequest request,
+                                 BindingResult binding) {
+        if (binding.hasErrors()) {
+            return "user-edit";
+        }
         userService.updateById(Long.parseLong(id), request);
         return "redirect:/users";
     }
@@ -83,6 +95,7 @@ public class UsersController {
             redirectAttributes.addFlashAttribute("errorMessage", "Введите ID пользователя");
         }
 
+        id = Objects.requireNonNullElse(id, "0");
         try {
             Long userId = Long.parseLong(id);
             UserInfo userInfo = userService.findById(userId);
@@ -96,3 +109,4 @@ public class UsersController {
         }
     }
 }
+
