@@ -1,6 +1,7 @@
 package com.artyom.crud.dao;
 
 import com.artyom.crud.entity.User;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -9,11 +10,17 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
     @PersistenceContext
     private EntityManager manager;
+    private final Supplier<UserDAO> userDAOSupplier;
+
+    public UserDAOImpl(BeanFactory factory) {
+        this.userDAOSupplier = () -> factory.getBean(UserDAO.class);
+    }
 
     @Override
     public void save(User user) {
@@ -47,8 +54,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void deleteById(Long id) {
-        if (fetchById(id).isPresent()) {
-            manager.remove(fetchById(id).get());
-        }
+        userDAOSupplier.get().fetchById(id).ifPresent(value -> manager.remove(value));
     }
 }

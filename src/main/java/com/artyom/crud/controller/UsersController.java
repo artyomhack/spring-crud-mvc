@@ -39,7 +39,7 @@ public class UsersController {
         model.addAttribute("id", "");
         model.addAttribute("users", userService.findAll());
         return "users";
-    }
+    }   
 
     @GetMapping("/create")
     public String showCreateUser(ModelMap model) {
